@@ -1,65 +1,69 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Header } from "@/components/Header";
+import { SymbolTabs } from "@/components/SymbolTabs";
+import { ChartPanel } from "@/components/ChartPanel";
+import { BuySellPanel } from "@/components/BuySellPanel";
+import { Watchlist } from "@/components/Watchlist";
+import { AlertsPanel } from "@/components/AlertsPanel";
+import { AssetSummary } from "@/components/AssetSummary";
+import { PositionsTable } from "@/components/PositionsTable";
+import { AnalyticsSummary } from "@/components/AnalyticsSummary";
+import { OrderFlowPanel } from "@/components/OrderFlowPanel";
+import { PerformanceChart } from "@/components/PerformanceChart";
+import { TraderProfile } from "@/components/TraderProfile";
+import { useState } from "react";
+
+function Dashboard() {
+  const [activeSymbol, setActiveSymbol] = useState("AAPL");
+  const [showProfile, setShowProfile] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="relative flex min-h-screen items-center justify-center px-3 py-6 sm:px-4 sm:py-8">
+      <main className="dashboard-shell card-elevated flex w-full max-w-[1600px] flex-col overflow-hidden rounded-[28px] border border-slate-200/60 bg-[#FFFFFF] shadow-sm backdrop-blur-sm dark:border-slate-800/80 dark:bg-[#111827]">
+        <Header onProfileClick={() => setShowProfile(true)} />
+        <SymbolTabs active={activeSymbol} onChange={setActiveSymbol} />
+
+        <AnalyticsSummary symbol={activeSymbol} />
+
+        <div className="grid flex-1 gap-4 px-4 pb-2 pt-2 lg:grid-cols-[minmax(0,2fr)_minmax(280px,360px)] lg:px-6 lg:pb-4">
+          <div className="flex flex-col gap-4">
+            <ChartPanel symbol={activeSymbol} />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-white/90 p-4 card-elevated dark:bg-slate-900/90">
+                <div className="mb-2 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <span>Session volume</span>
+                  <span>09:30 • 16:00 (ET)</span>
+                </div>
+                <div className="h-16 rounded-2xl bg-gradient-to-t from-slate-100 to-slate-50 dark:from-slate-900 dark:to-slate-950" />
+                <div className="mt-2 flex items-center justify-between text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                  <span>09:30</span>
+                  <span>11:00</span>
+                  <span>13:00</span>
+                  <span>15:30</span>
+                  <span>16:00</span>
+                </div>
+              </div>
+              <BuySellPanel symbol={activeSymbol} />
+            </div>
+          </div>
+
+          <aside className="flex flex-col gap-4 lg:max-w-sm">
+            <Watchlist />
+            <AssetSummary symbol={activeSymbol} />
+            <OrderFlowPanel symbol={activeSymbol} />
+            <AlertsPanel />
+          </aside>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <PositionsTable />
+        <PerformanceChart />
       </main>
+      {showProfile && <TraderProfile onClose={() => setShowProfile(false)} />}
     </div>
   );
+}
+
+export default function Page() {
+  return <Dashboard />;
 }
